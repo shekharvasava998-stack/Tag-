@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="gu">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Emergency Lost Pet Profile</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    body { background-color: #f1f5f9; display: flex; justify-content: center; padding: 12px; }
+    .card { background: #ffffff; width: 100%; max-width: 420px; border-radius: 18px; overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.12); text-align: center; border: 1px solid #e2e8f0; }
+    
+    /* Emergency Alert Header */
+    .emergency-banner { background: #dc2626; color: #ffffff; padding: 14px 10px; font-weight: 800; font-size: 15px; letter-spacing: 0.5px; line-height: 1.4; }
+    .emergency-banner span { display: block; font-size: 12px; font-weight: normal; opacity: 0.9; margin-top: 2px; }
+    
+    /* Pet Visual */
+    .pet-avatar { width: 150px; height: 150px; border-radius: 50%; object-fit: cover; margin: 18px auto 8px; border: 4px solid #fee2e2; box-shadow: 0 4px 10px rgba(0,0,0,0.08); }
+    .pet-title { font-size: 26px; font-weight: 800; color: #0f172a; margin-top: 5px; }
+    .pet-breed { font-size: 14px; font-weight: 600; color: #64748b; margin-bottom: 16px; }
+
+    /* Action Buttons */
+    .actions { padding: 0 16px; display: flex; flex-direction: column; gap: 10px; }
+    .btn { display: flex; align-items: center; justify-content: center; gap: 8px; padding: 14px; border-radius: 12px; text-decoration: none; font-size: 16px; font-weight: 700; transition: transform 0.1s ease; }
+    .btn:active { transform: scale(0.98); }
+    .btn-call { background: #16a34a; color: #ffffff; }
+    .btn-wa { background: #25d366; color: #ffffff; }
+
+    /* Details Box */
+    .info-card { background: #f8fafc; margin: 16px; padding: 14px; border-radius: 12px; text-align: left; border: 1px solid #e2e8f0; font-size: 14px; line-height: 1.7; color: #334155; }
+    .info-row { display: flex; justify-content: space-between; border-bottom: 1px dashed #cbd5e1; padding: 4px 0; }
+    .info-row:last-child { border-bottom: none; }
+    .info-label { font-weight: 600; color: #475569; }
+    .medical-note { background: #fef2f2; border-left: 4px solid #ef4444; padding: 10px; margin-top: 10px; border-radius: 4px; font-size: 13px; color: #991b1b; }
+
+    /* GPS Status Bar */
+    .gps-bar { background: #fffbeb; color: #b45309; padding: 10px; font-size: 12px; font-weight: 600; border-top: 1px solid #fef3c7; }
+  </style>
+</head>
+<body>
+
+<div class="card">
+  <!-- Top Banner -->
+  <div class="emergency-banner">
+    🚨 HU KHOVAI GAYO CHHU / I AM LOST
+    <span>કૃપા કરીને મને મારા પરિવાર પાસે પહોંચાડો</span>
+  </div>
+
+  <!-- Pet Photo & Name -->
+  <img id="petImg" class="pet-avatar" src="https://images.unsplash.com/photo-1552053831-71594a27632d?w=400" alt="Pet Profile Photo">
+  <div id="petName" class="pet-title">COCO</div>
+  <div id="petBreed" class="pet-breed">Golden Retriever • Male</div>
+
+  <!-- Direct Calling Buttons -->
+  <div class="actions">
+    <a id="btnCall" href="tel:919876543210" class="btn btn-call">📞 Call Owner Now</a>
+    <a id="btnWa" href="#" class="btn btn-wa">💬 WhatsApp Owner</a>
+  </div>
+
+  <!-- Details Card -->
+  <div class="info-card">
+    <div class="info-row">
+      <span class="info-label">Family / માલિક:</span>
+      <span id="ownerName">Shekhar</span>
+    </div>
+    <div class="info-row">
+      <span class="info-label">City / શહેર:</span>
+      <span id="ownerCity">Surat, Gujarat</span>
+    </div>
+    <div class="medical-note" id="medicalNote">
+      <b>⚠️ મહત્વની નોંધ:</b> કરડશે નહીં, સ્વભાવે શાંત છે. કૃપા કરીને થોડું પીવાનું પાણી આપો.
+    </div>
+  </div>
+
+  <!-- GPS Notification Status -->
+  <div class="gps-bar" id="gpsStatus">
+    📍 Locating GPS position to alert owner...
+  </div>
+</div>
+
+<script>
+  // 1. Tag ID Recognition (?id=101)
+  const params = new URLSearchParams(window.location.search);
+  const currentId = params.get('id') || '101';
+
+  // 2. Data Bank (Tame nava pets no data aama add kari shako chho)
+  const petDirectory = {
+    "101": {
+      name: "COCO",
+      breed: "Golden Retriever • Male",
+      owner: "Shekhar",
+      phone: "919876543210", // <-- Tamara WhatsApp/Calling number sathe change karo
+      city: "Surat, Gujarat",
+      note: "કરડશે નહીં, સ્વભાવે શાંત છે. કૃપા કરીને થોડું પીવાનું પાણી આપો.",
+      photo: "https://images.unsplash.com/photo-1552053831-71594a27632d?w=400"
+    },
+    "102": {
+      name: "BRUNO",
+      breed: "Shih Tzu • Friendly",
+      owner: "Divya",
+      phone: "919876543210",
+      city: "Surat, Gujarat",
+      note: "બહુ નાનો કૂતરો છે, દૂધ આપવું નહીં. માત્ર બિસ્કિટ કે પાણી આપો.",
+      photo: "https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=400"
+    }
+  };
+
+  const currentPet = petDirectory[currentId] || petDirectory["101"];
+
+  // Populate HTML with data
+  document.getElementById("petName").innerText = currentPet.name;
+  document.getElementById("petBreed").innerText = currentPet.breed;
+  document.getElementById("ownerName").innerText = currentPet.owner;
+  document.getElementById("ownerCity").innerText = currentPet.city;
+  document.getElementById("medicalNote").innerHTML = `<b>⚠️ નોંધ:</b> ${currentPet.note}`;
+  document.getElementById("petImg").src = currentPet.photo;
+  document.getElementById("btnCall").href = "tel:" + currentPet.phone;
+  document.getElementById("btnWa").href = `https://wa.me/${currentPet.phone}?text=Hello, mane tamaro pet ${currentPet.name} malyo chhe.`;
+
+  // 3. Automatic GPS Alert Trigger
+  window.addEventListener("DOMContentLoaded", () => {
+    if ("geolocation" in navigator) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const lat = position.coords.latitude;
+          const lon = position.coords.longitude;
+          const mapsLink = `https://maps.google.com/?q=${lat},${lon}`;
+
+          document.getElementById("gpsStatus").innerText = "✅ Location shared with pet family!";
+          document.getElementById("gpsStatus").style.color = "#16a34a";
+          document.getElementById("gpsStatus").style.background = "#dcfce7";
+
+          // Live maps link ready - tame webhook / WhatsApp bot sathe direct connect kari shako chho
+          console.log("Trigger live location to owner:", mapsLink);
+        },
+        (error) => {
+          document.getElementById("gpsStatus").innerText = "⚠️ Location permission not granted.";
+        },
+        { enableHighAccuracy: true, timeout: 8000 }
+      );
+    }
+  });
+</script>
+
+</body>
+</html>
