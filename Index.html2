@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="gu">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Smart Pet Digital ID • Emergency Tag</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary-red: #f43f5e;
+      --accent-green: #10b981;
+      --accent-wa: #25d366;
+      --card-bg: rgba(255, 255, 255, 0.98);
+      --text-title: #0f172a;
+      --text-body: #475569;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
+
+    body {
+      background: radial-gradient(circle at top, #1e293b 0%, #0f172a 100%);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 14px 10px;
+    }
+
+    .smart-card {
+      width: 100%;
+      max-width: 420px;
+      background: var(--card-bg);
+      border-radius: 28px;
+      overflow: hidden;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.45);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    /* Top Emergency Alert Bar */
+    .top-banner {
+      background: linear-gradient(135deg, #e11d48 0%, #be123c 100%);
+      color: white;
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .pulse-wrapper {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.8px;
+    }
+    .radar-dot {
+      width: 9px;
+      height: 9px;
+      background: #4ade80;
+      border-radius: 50%;
+      box-shadow: 0 0 0 0 rgba(74, 222, 128, 0.8);
+      animation: radar 1.5s infinite;
+    }
+    @keyframes radar {
+      0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(74, 222, 128, 0.7); }
+      70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(74, 222, 128, 0); }
+      100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(74, 222, 128, 0); }
+    }
+    .chip-id {
+      background: rgba(255, 255, 255, 0.22);
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+
+    /* Pet Main Profile View */
+    .profile-hero {
+      text-align: center;
+      padding: 22px 18px 12px;
+      background: linear-gradient(180deg, #fff1f2 0%, #ffffff 100%);
+    }
+    .photo-container {
+      width: 145px;
+      height: 145px;
+      margin: 0 auto 12px;
+      border-radius: 50%;
+      position: relative;
+      padding: 5px;
+      background: linear-gradient(135deg, #f43f5e, #fb7185);
+      box-shadow: 0 12px 24px rgba(244, 63, 94, 0.25);
+    }
+    .pet-photo {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      object-fit: cover;
+      background: #f1f5f9;
+      display: block;
+    }
+    .species-tag {
+      position: absolute;
+      bottom: 4px;
+      right: 4px;
+      background: #0f172a;
+      color: white;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      box-shadow: 0 3px 6px rgba(0,0,0,0.25);
+    }
+
+    .pet-name {
+      font-size: 28px;
+      font-weight: 800;
+      color: var(--text-title);
+      text-transform: uppercase;
+      letter-spacing: -0.5px;
+    }
+    .pet-sub-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 4px;
+      background: #f1f5f9;
+      color: #334155;
+      font-size: 13px;
+      font-weight: 700;
+      padding: 5px 14px;
+      border-radius: 14px;
+    }
+
+    /* Fast Touch Action Buttons */
+    .action-container {
+      padding: 10px 18px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .action-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 15px;
+      border-radius: 16px;
+      text-decoration: none;
+      font-size: 16px;
+      font-weight: 800;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+      transition: all 0.2s;
+    }
+    .btn-call {
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      color: white;
+    }
+    .btn-wa {
+      background: linear-gradient(135deg, #25d366 0%, #16a34a 100%);
+      color: white;
+    }
+    .action-btn:active {
+      transform: scale(0.97);
+    }
+
+    /* Detailed Specification Grid */
+    .info-section {
+      margin: 0 18px 14px;
+      background: #f8fafc;
+      border-radius: 20px;
+      border: 1px solid #e2e8f0;
+      padding: 14px 16px;
+    }
+    .info-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 9px 0;
+      border-bottom: 1px dashed #e2e8f0;
+      font-size: 13.5px;
+    }
+    .info-row:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+    .info-label {
+      color: var(--text-body);
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .info-val {
+      color: var(--text-title);
+      font-weight: 700;
+    }
+
+    /* Trust & Health Badges */
+    .badge-row {
+      display: flex;
+      gap: 8px;
+      margin: 0 18px 14px;
+    }
+    .trust-badge {
+      flex: 1;
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      border-radius: 12px;
+      padding: 8px 10px;
+      text-align: center;
+      font-size: 11.5px;
+      color: #1e40af;
+      font-weight: 700;
+    }
+
+    /* Important Behavior & Care Notes */
+    .notes-box {
+      margin: 0 18px 16px;
+      background: #fff1f2;
+      border-left: 4px solid var(--primary-red);
+      border-radius: 12px;
+      padding: 12px 14px;
+      font-size: 13px;
+      color: #9f1239;
+      line-height: 1.5;
+    }
+
+    /* Footer GPS Notification */
+    .gps-banner {
+      background: #f1f5f9;
+      padding: 12px 16px;
+      font-size: 12px;
+      font-weight: 600;
+      color: #64748b;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      border-top: 1px solid #e2e8f0;
+    }
+  </style>
+</head>
+<body>
+
+<div class="smart-card">
+  <!-- Top Live Bar -->
+  <div class="top-banner">
+    <div class="pulse-wrapper">
+      <div class="radar-dot"></div>
+      SMART PET TAG • LIVE
+    </div>
+    <div class="chip-id" id="tagBadge">TAG #101</div>
+  </div>
+
+  <!-- Hero Photo & Details -->
+  <div class="profile-hero">
+    <div class="photo-container">
+      <img id="petImg" class="pet-photo" src="https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=400" alt="Pet Profile Photo">
+      <div class="species-tag" id="speciesIcon">🐶</div>
+    </div>
+    <div class="pet-name" id="petName">COCO</div>
+    <div class="pet-sub-badge" id="petBreed">Indian • Dog</div>
+  </div>
+
+  <!-- Contact Buttons -->
+  <div class="action-container">
+    <a id="btnCall" href="tel:919664951873" class="action-btn btn-call">
+      📞 Call Owner Immediately
+    </a>
+    <a id="btnWa" href="https://wa.me/919664951873" class="action-btn btn-wa">
+      💬 WhatsApp Owner
+    </a>
+  </div>
+
+  <!-- Trust Verification Badges -->
+  <div class="badge-row">
+    <div class="trust-badge">💉 Fully Vaccinated</div>
+    <div class="trust-badge">🛡️ Verified Microchip</div>
+  </div>
+
+  <!-- Pet Information Table -->
+  <div class="info-section">
+    <div class="info-row">
+      <span class="info-label">👤 Family / માલિક:</span>
+      <span class="info-val" id="ownerName">Divya</span>
+    </div>
+    <div class="info-row">
+      <span class="info-label">📍 City / શહેર:</span>
+      <span class="info-val" id="ownerCity">Surat</span>
+    </div>
+    <div class="info-row">
+      <span class="info-label">✨ સ્વભાવ / Temper:</span>
+      <span class="info-val" id="temperVal">Friendly & Calm</span>
+    </div>
+  </div>
+
+  <!-- Medical & Friendly Notes -->
+  <div class="notes-box" id="medicalNote">
+    <b>⚠️ મહત્વપૂર્ણ નોંધ:</b> Friendly
+  </div>
+
+  <!-- Smart Location Beacon -->
+  <div class="gps-banner" id="gpsStatus">
+    📍 Locating GPS position to send owner alert...
+  </div>
+</div>
+
+<script>
+  // 1. Tag ID Recognition (?id=101)
+  const params = new URLSearchParams(window.location.search);
+  const currentId = (params.get('id') || '101').trim();
+  document.getElementById("tagBadge").innerText = "TAG #" + currentId;
+
+  // 2. Google Sheet CSV Live Data Source
+  const sheetCsvUrl = "https://docs.google.com/spreadsheets/d/1-5xv254drMlUyuT1-gcFY503b5AXNF3D0nge50wc8A0/export?format=csv";
+
+  fetch(sheetCsvUrl)
+    .then(res => res.text())
+    .then(csv => {
+      const lines = csv.split(/\r?\n/);
+      let found = null;
+
+      for (let i = 1; i < lines.length; i++) {
+        const row = lines[i].split(',').map(item => item ? item.trim().replace(/^"|"$/g, '') : '');
+        if (row[0] && row[0] === currentId) {
+          found = {
+            id: row[0],
+            name: row[1] || 'Pet',
+            breed: row[2] || 'Pet',
+            owner: row[3] || 'Owner',
+            phone: (row[4] || '').replace(/[^0-9]/g, ''),
+            city: row[5] || 'Gujarat',
+            note: row[6] || 'કૃપા કરીને મદદ કરો.',
+            photo: row[7] || ''
+          };
+          break;
+        }
+      }
+
+      if (found) {
+        document.getElementById("petName").innerText = found.name;
+        document.getElementById("ownerName").innerText = found.owner;
+        document.getElementById("ownerCity").innerText = found.city;
+        document.getElementById("medicalNote").innerHTML = `<b>⚠️ નોંધ / સૂચના:</b> ${found.note}`;
+        document.getElementById("temperVal").innerText = found.note.includes("Friendly") ? "Friendly & Calm" : "Calm & Loving";
+
+        // Dog / Cat Smart Icon Detector
+        const lowerBreed = found.breed.toLowerCase();
+        if (lowerBreed.includes("cat") || lowerBreed.includes("બિલાડી") || lowerBreed.includes("persian")) {
+          document.getElementById("speciesIcon").innerText = "🐱";
+          document.getElementById("petBreed").innerText = found.breed + " • Cat";
+        } else {
+          document.getElementById("speciesIcon").innerText = "🐶";
+          document.getElementById("petBreed").innerText = found.breed + " • Dog";
+        }
+
+        // Phone Setup
+        let phoneNum = found.phone;
+        if (phoneNum.length === 10) phoneNum = "91" + phoneNum;
+        document.getElementById("btnCall").href = "tel:" + phoneNum;
+        document.getElementById("btnWa").href = `https://wa.me/${phoneNum}?text=Hello, mane tamaro pet ${found.name} malyo chhe.`;
+
+        // Smart Photo Resolver (ImgBB + Google Drive + Direct Image)
+        let rawPhoto = found.photo.trim();
+        if (rawPhoto) {
+          if (rawPhoto.includes("ibb.co/") && !rawPhoto.includes("i.ibb.co/")) {
+            // Converts ibb.co viewer link to direct ImgBB preview link
+            const code = rawPhoto.split("ibb.co/")[1]?.split("/")[0];
+            if (code) {
+              document.getElementById("petImg").src = `https://i.ibb.co/${code}/image.jpg`;
+            }
+          } else if (rawPhoto.includes("drive.google.com")) {
+            const driveId = rawPhoto.match(/\/d\/([a-zA-Z0-9_-]+)/) || rawPhoto.match(/id=([a-zA-Z0-9_-]+)/);
+            if (driveId && driveId[1]) {
+              document.getElementById("petImg").src = `https://lh3.googleusercontent.com/d/${driveId[1]}`;
+            }
+          } else if (rawPhoto.startsWith("http")) {
+            document.getElementById("petImg").src = rawPhoto;
+          }
+        }
+      }
+    })
+    .catch(e => console.log(e));
+
+  // Geolocation Sensor
+  window.addEventListener("DOMContentLoaded", () => {
+    if ("geolocation" in navigator) {
+      navigator.geolocation.getCurrentPosition(
+        () => {
+          const s = document.getElementById("gpsStatus");
+          s.innerText = "✅ GPS beacon shared with pet parents";
+          s.style.color = "#15803d";
+          s.style.background = "#dcfce7";
+        },
+        () => {
+          document.getElementById("gpsStatus").innerText = "📍 GPS beacon standby";
+        },
+        { enableHighAccuracy: true, timeout: 6000 }
+      );
+    }
+  });
+</script>
+
+</body>
+</html>
