@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="gu">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Smart Pet Digital ID</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    body { background: #0f172a; min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 14px; }
+    .card { background: #ffffff; width: 100%; max-width: 400px; border-radius: 24px; overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.5); text-align: center; }
+    
+    /* Emergency Alert Header */
+    .top-header { background: #e11d48; color: #ffffff; padding: 12px; font-weight: 800; font-size: 13px; letter-spacing: 0.5px; }
+    
+    /* Pet Photo */
+    .avatar-box { padding: 20px 20px 10px; background: linear-gradient(180deg, #ffe4e6 0%, #ffffff 100%); }
+    .avatar { width: 140px; height: 140px; border-radius: 50%; object-fit: cover; border: 4px solid #f43f5e; box-shadow: 0 8px 16px rgba(244,63,94,0.3); background: #e2e8f0; }
+    .pet-name { font-size: 26px; font-weight: 800; color: #0f172a; margin-top: 10px; text-transform: uppercase; }
+    .pet-badge { display: inline-block; margin-top: 4px; padding: 4px 12px; background: #f1f5f9; color: #475569; font-size: 13px; font-weight: 700; border-radius: 20px; }
+
+    /* Action Buttons */
+    .btn-group { padding: 14px 20px; display: flex; flex-direction: column; gap: 10px; }
+    .btn { display: flex; align-items: center; justify-content: center; gap: 8px; padding: 14px; border-radius: 14px; text-decoration: none; font-size: 16px; font-weight: 800; color: #ffffff; }
+    .btn-call { background: #10b981; }
+    .btn-wa { background: #25d366; }
+
+    /* Info Table */
+    .info-box { margin: 0 20px 16px; background: #f8fafc; border-radius: 16px; border: 1px solid #e2e8f0; padding: 12px 16px; font-size: 14px; text-align: left; }
+    .info-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px dashed #cbd5e1; }
+    .info-row:last-child { border-bottom: none; }
+    .label { color: #64748b; font-weight: 600; }
+    .val { color: #0f172a; font-weight: 700; }
+
+    /* Alert Note */
+    .note-box { margin: 0 20px 20px; background: #fff1f2; border-left: 4px solid #f43f5e; border-radius: 8px; padding: 10px 12px; font-size: 13px; color: #9f1239; text-align: left; line-height: 1.4; }
+  </style>
+</head>
+<body>
+
+<div class="card">
+  <div class="top-header">
+    🚨 EMERGENCY LOST PET ID • HU KHOVAI GAYO CHHU
+  </div>
+
+  <div class="avatar-box">
+    <img id="petImg" class="avatar" src="https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=400" alt="Pet Profile">
+    <div id="petName" class="pet-name">COCO</div>
+    <div id="petBreed" class="pet-badge">🐶 Indian • Dog</div>
+  </div>
+
+  <div class="btn-group">
+    <a id="btnCall" href="tel:919664951873" class="btn btn-call">📞 Call Owner Now</a>
+    <a id="btnWa" href="https://wa.me/919664951873" class="btn btn-wa">💬 WhatsApp Owner</a>
+  </div>
+
+  <div class="info-box">
+    <div class="info-row">
+      <span class="label">👤 Family / માલિક:</span>
+      <span class="val" id="ownerName">Divya</span>
+    </div>
+    <div class="info-row">
+      <span class="label">📍 City / શહેર:</span>
+      <span class="val" id="ownerCity">Surat</span>
+    </div>
+  </div>
+
+  <div class="note-box" id="medicalNote">
+    <b>⚠️ નોંધ:</b> Friendly
+  </div>
+</div>
+
+<script>
+  const params = new URLSearchParams(window.location.search);
+  const currentId = (params.get('id') || '101').trim();
+
+  // Google Sheet Live CSV Link
+  const sheetUrl = "https://docs.google.com/spreadsheets/d/1-5xv254drMlUyuT1-gcFY503b5AXNF3D0nge50wc8A0/export?format=csv";
+
+  fetch(sheetUrl)
+    .then(r => r.text())
+    .then(data => {
+      const rows = data.split(/\r?\n/);
+      for (let i = 1; i < rows.length; i++) {
+        const c = rows[i].split(',').map(item => item ? item.trim().replace(/^"|"$/g, '') : '');
+        if (c[0] && c[0] === currentId) {
+          // Name & Breed
+          if (c[1]) document.getElementById("petName").innerText = c[1];
+          if (c[2]) {
+            const isCat = c[2].toLowerCase().includes("cat") || c[2].toLowerCase().includes("biladi");
+            document.getElementById("petBreed").innerText = `${isCat ? '🐱' : '🐶'} ${c[2]}`;
+          }
+          // Owner & City
+          if (c[3]) document.getElementById("ownerName").innerText = c[3];
+          if (c[5]) document.getElementById("ownerCity").innerText = c[5];
+          if (c[6]) document.getElementById("medicalNote").innerHTML = `<b>⚠️ નોંધ:</b> ${c[6]}`;
+
+          // Contact Links
+          if (c[4]) {
+            let phone = c[4].replace(/[^0-9]/g, '');
+            if (phone.length === 10) phone = "91" + phone;
+            document.getElementById("btnCall").href = "tel:" + phone;
+            document.getElementById("btnWa").href = `https://wa.me/${phone}?text=Hello, mane tamaro pet ${c[1]} malyo chhe.`;
+          }
+
+          // Photo Logic (ImgBB + Google Drive Support)
+          if (c[7]) {
+            let photoUrl = c[7].trim();
+            if (photoUrl.includes("ibb.co/") && !photoUrl.includes("i.ibb.co/")) {
+              const code = photoUrl.split("ibb.co/")[1]?.split("/")[0];
+              if (code) photoUrl = `https://i.ibb.co/${code}/image.jpg`;
+            } else if (photoUrl.includes("drive.google.com")) {
+              const driveId = photoUrl.match(/\/d\/([a-zA-Z0-9_-]+)/) || photoUrl.match(/id=([a-zA-Z0-9_-]+)/);
+              if (driveId && driveId[1]) photoUrl = `https://lh3.googleusercontent.com/d/${driveId[1]}`;
+            }
+            if (photoUrl.startsWith("http")) {
+              document.getElementById("petImg").src = photoUrl;
+            }
+          }
+          break;
+        }
+      }
+    })
+    .catch(err => console.log("Live load standby"));
+</script>
+
+</body>
+</html>
