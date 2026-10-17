@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="gu">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Smart Pet Digital ID • Emergency Tag</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+    body { background: #0f172a; min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 14px 10px; }
+    
+    .card {
+      width: 100%;
+      max-width: 410px;
+      background: #ffffff;
+      border-radius: 26px;
+      overflow: hidden;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.4);
+      text-align: center;
+    }
+
+    .lang-bar {
+      background: #1e293b;
+      padding: 8px 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .lang-title { color: #94a3b8; font-size: 11px; font-weight: 700; }
+    .lang-select {
+      background: #334155;
+      color: #ffffff;
+      border: 1px solid #475569;
+      padding: 5px 8px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 700;
+      outline: none;
+      cursor: pointer;
+    }
+
+    .emergency-header {
+      background: #e11d48;
+      color: white;
+      padding: 12px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 11.5px;
+      font-weight: 800;
+    }
+    .badge-id {
+      background: rgba(255, 255, 255, 0.25);
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-size: 12px;
+    }
+
+    .hero {
+      background: linear-gradient(180deg, #ffe4e6 0%, #ffffff 100%);
+      padding: 22px 14px 10px;
+      position: relative;
+    }
+    .avatar-wrapper {
+      position: relative;
+      width: 150px;
+      height: 150px;
+      margin: 0 auto 10px;
+    }
+    .pet-photo {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 4px solid #f43f5e;
+      box-shadow: 0 8px 18px rgba(244,63,94,0.25);
+      display: none;
+      background: #f1f5f9;
+    }
+    .photo-placeholder {
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%;
+      border-radius: 50%;
+      background: #f1f5f9;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 46px;
+      border: 4px solid #f43f5e;
+    }
+    .species-tag {
+      position: absolute;
+      bottom: 4px;
+      right: 4px;
+      background: #0f172a;
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 17px;
+    }
+    .pet-name { font-size: 26px; font-weight: 800; color: #0f172a; text-transform: uppercase; }
+    .pet-sub { display: inline-block; margin-top: 4px; padding: 4px 14px; background: #f1f5f9; color: #475569; font-size: 12.5px; font-weight: 700; border-radius: 20px; }
+
+    .actions { padding: 10px 16px; display: flex; flex-direction: column; gap: 8px; }
+    .btn { display: flex; align-items: center; justify-content: center; gap: 6px; padding: 12px; border-radius: 14px; text-decoration: none; font-size: 15px; font-weight: 800; color: white; border: none; cursor: pointer; }
+    .btn:active { transform: scale(0.98); }
+    .btn-gps { background: #2563eb; }
+    .btn-call { background: #10b981; }
+    .btn-wa { background: #16a34a; }
+    .btn-alt-row { display: none; grid-template-columns: 1fr 1fr; gap: 6px; }
+    .btn-alt { background: #334155; font-size: 12.5px; padding: 10px; }
+    .btn-mail { background: #dc2626; font-size: 14px; }
+
+    .vax-banner {
+      margin: 0 16px 10px;
+      padding: 9px;
+      border-radius: 12px;
+      font-size: 12.5px;
+      font-weight: 700;
+    }
+    .vax-yes { background: #dcfce7; color: #15803d; }
+    .vax-no { background: #fee2e2; color: #b91c1c; }
+
+    .info-card {
+      margin: 0 16px 12px;
+      background: #f8fafc;
+      border-radius: 16px;
+      border: 1px solid #e2e8f0;
+      padding: 10px 14px;
+      text-align: left;
+    }
+    .info-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 6px 0;
+      border-bottom: 1px dashed #e2e8f0;
+      font-size: 13px;
+    }
+    .info-row:last-child { border-bottom: none; }
+    .lbl { color: #64748b; font-weight: 600; }
+    .val { color: #0f172a; font-weight: 700; }
+
+    .nature-box {
+      margin: 0 16px 12px;
+      background: #eff6ff;
+      border-left: 4px solid #3b82f6;
+      border-radius: 10px;
+      padding: 10px 12px;
+      font-size: 12.5px;
+      color: #1e40af;
+      text-align: left;
+    }
+
+    .gps-box {
+      background: #f1f5f9;
+      padding: 10px;
+      font-size: 11.5px;
+      font-weight: 600;
+      color: #475569;
+    }
+
+    .brand-footer {
+      background: #ffffff;
+      padding: 16px 14px 14px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      border-top: 1px solid #f1f5f9;
+    }
+    .brand-text {
+      font-size: 11px;
+      font-weight: 800;
+      color: #64748b;
+      letter-spacing: 0.8px;
+    }
+    .brand-logo-img {
+      height: 52px;
+      max-width: 180px;
+      object-fit: contain;
+    }
+  </style>
+</head>
+<body>
+
+<div class="card">
+  <!-- All-India Language Dropdown (8 Languages) -->
+  <div class="lang-bar">
+    <span class="lang-title">🇮🇳 ભાષા / Language:</span>
+    <select class="lang-select" id="langSelect" onchange="setLanguage(this.value)">
+      <option value="gu" selected>ગુજરાતી</option>
+      <option value="hi">हिन्दी</option>
+      <option value="en">English</option>
+      <option value="mr">मराठी</option>
+      <option value="bn">বাংলা</option>
+      <option value="ta">தமிழ்</option>
+      <option value="te">తెలుగు</option>
+      <option value="kn">ಕನ್ನಡ</option>
+    </select>
+  </div>
+
+  <div class="emergency-header">
+    <span id="txtHeader">🚨 EMERGENCY LOST PET ID</span>
+    <span class="badge-id" id="dispId">TAG #101</span>
+  </div>
+
+  <div class="hero">
+    <div class="avatar-wrapper">
+      <div class="photo-placeholder" id="avatarPlaceholder">🐶</div>
+      <img id="petImg" class="pet-photo" src="" alt="Pet Photo" referrerpolicy="no-referrer">
+      <div class="species-tag" id="speciesIcon">🐶</div>
+    </div>
+    <div class="pet-name" id="petName">COCO</div>
+    <div class="pet-sub" id="petBreed">Indian • Dog</div>
+  </div>
+
+  <div class="actions">
+    <!-- 1-Tap Direct GPS Button -->
+    <button class="btn btn-gps" id="btnGps" onclick="sendLocationNow()">
+      📍 શેર લાઇવ લોકેશન (WhatsApp)
+    </button>
+    
+    <a id="btnCall" href="tel:918160953780" class="btn btn-call">📞 વાલીને ફોન કરો (Call)</a>
+    <a id="btnWa" href="https://wa.me/918160953780" class="btn btn-wa">💬 WhatsApp પર વાત કરો</a>
+
+    <div class="btn-alt-row" id="altContactRow">
+      <a id="btnAltCall" href="#" class="btn btn-alt">📞 બીજો નંબર (Call)</a>
+      <a id="btnAltWa" href="#" class="btn btn-alt">💬 WhatsApp (Alt)</a>
+    </div>
+
+    <button class="btn btn-mail" id="btnMail" onclick="sendEmailAlert()">
+      📧 ઇમેઇલ એલર્ટ મોકલો (Gmail)
+    </button>
+  </div>
+
+  <div id="vaxBox" class="vax-banner vax-yes">
+    💉 Fully Vaccinated (રસીકરણ થયેલ છે)
+  </div>
+
+  <div class="info-card">
+    <div class="info-row">
+      <span class="lbl" id="lblGender">🐾 જાતિ / Gender:</span>
+      <span class="val" id="petGender">Male ♂</span>
+    </div>
+    <div class="info-row">
+      <span class="lbl" id="lblParents">👨‍👩‍👧 Parents / વાલી:</span>
+      <span class="val" id="parentName">Divya</span>
+    </div>
+    <div class="info-row">
+      <span class="lbl" id="lblCity">📍 City / રહેઠાણ:</span>
+      <span class="val" id="ownerCity">Surat, adajan</span>
+    </div>
+    <div class="info-row" id="altPhoneRow" style="display: none;">
+      <span class="lbl" id="lblAlt">📱 બીજો નંબર / Alt No:</span>
+      <span class="val" id="altPhoneDisplay">-</span>
+    </div>
+  </div>
+
+  <div class="nature-box" id="petNatureBox">
+    <b id="lblNature">🐶 નોંધ / Nature:</b> <span id="natureText">My baby coco is very sweet and friendly</span>
+  </div>
+
+  <div class="gps-box" id="gpsStatus">
+    💡 "શેર લાઇવ લોકેશન" દબાવીને માલિકને કરંટ લોકેશન મોકલો
+  </div>
+
+  <div class="brand-footer">
+    <span class="brand-text">SECURED BY</span>
+    <img src="https://raw.githubusercontent.com/shekharvasava998-stack/Tag-/main/IMG_6026.png" alt="MyPetTag Logo" class="brand-logo-img">
+  </div>
+</div>
+
+<script>
+  let targetPhone = "918160953780";
+  let altPhone = "";
+  let targetEmail = "";
+  let petDisplayName = "COCO";
+  let rawBreed = "Indian";
+  let speciesCategory = "dog";
+  let isVaccinated = true;
+  let isFemale = false;
+  let rawSheetNote = "My baby coco is very sweet and friendly";
+  let currentLang = 'gu';
+  let cachedLocationUrl = "";
+  let isRequestingLocation = false;
+
+  const speciesDict = {
+    dog: { emoji: "🐶", gu: "શ્વાન", hi: "कुत्ता", en: "Dog", mr: "कुत्रा", bn: "কুকুর", ta: "நாய்", te: "కుక్క", kn: "ನಾಯಿ" },
+    cat: { emoji: "🐱", gu: "બિલાડી", hi: "बिल्ली", en: "Cat", mr: "मांजर", bn: "বিড়াল", ta: "பூனை", te: "పిల్లి", kn: "ಬೆಕ್ಕು" },
+    monkey: { emoji: "🐒", gu: "વાંદરો", hi: "बंदर", en: "Monkey", mr: "माकड", bn: "বানর", ta: "குரங்கு", te: "కోతి", kn: "ಕೋತಿ" },
+    cow: { emoji: "🐮", gu: "ગાય", hi: "गाय", en: "Cow", mr: "गाय", bn: "গরু", ta: "பசு", te: "ఆవు", kn: "ಹಸು" },
+    rabbit: { emoji: "🐰", gu: "સસલું", hi: "खरगोश", en: "Rabbit", mr: "ससा", bn: "খরগোশ", ta: "முயல்", te: "కుందేలు", kn: "ಮೊಲ" },
+    bird: { emoji: "🦜", gu: "પક્ષી", hi: "पक्षी", en: "Bird", mr: "पक्षी", bn: "পাখি", ta: "பறவை", te: "పక్షి", kn: "ಪಕ್ಷಿ" },
+    pet: { emoji: "🐾", gu: "પાલતુ", hi: "पालतू", en: "Pet", mr: "पाळीव", bn: "পোষা", ta: "செல்லப்பிராணி", te: "పెంపుడు", kn: "ಸಾಕುಪ್ರಾಣಿ" }
+  };
+
+  const tData = {
+    gu: {
+      btnGps: "📍 શેર લાઇવ લોકેશન (WhatsApp)",
+      btnCall: "📞 વાલીને ફોન કરો (Call)",
+      btnWa: "💬 WhatsApp પર વાત કરો",
+      btnAltCall: "📞 બીજો નંબર (Call)",
+      btnAltWa: "💬 WhatsApp (Alt)",
+      btnMail: "📧 ઇમેઇલ એલર્ટ મોકલો (Gmail)",
+      vaxY: "💉 Fully Vaccinated (રસીકરણ થયેલ છે)",
+      vaxN: "⚠️ Vaccination Pending (રસીકરણ બાકી છે)",
+      lGen: "🐾 જાતિ / Gender:",
+      male: "Male (નર ♂)",
+      female: "Female (માદા ♀)",
+      lPar: "👨‍👩‍👧 Parents / વાલી:",
+      lCit: "📍 City / રહેઠાણ:",
+      lAlt: "📱 બીજો નંબર / Alt No:",
+      lNat: " નોંધ / Nature:",
+      hint: '💡 "શેર લાઇવ લોકેશન" દબાવીને માલિકને કરંટ લોકેશન મોકલો',
+      locating: "⏳ લોકેશન મેળવી રહ્યું છે...",
+      perm: "⏳ Allow પર ક્લિક કરો, સીધું WhatsApp ખુલશે...",
+      done: "✅ લોકેશન મળી ગયું! WhatsApp ખુલે છે...",
+      denied: "⚠️ લોકેશન પરમિશન બ્રાઉઝરમાં Allow કરો."
+    },
+    hi: {
+      btnGps: "📍 लाइव लोकेशन भेजें (WhatsApp)",
+      btnCall: "📞 पेरेंट्स को कॉल करें (Call)",
+      btnWa: "💬 WhatsApp पर बात करें",
+      btnAltCall: "📞 दूसरा नंबर (Call)",
+      btnAltWa: "💬 WhatsApp (Alt)",
+      btnMail: "📧 ईमेल अलर्ट भेजें (Gmail)",
+      vaxY: "💉 फुल्ली वैक्सीनेटेड (टीकाकरण पूर्ण)",
+      vaxN: "⚠️ वैक्सीनेशन बाकी है",
+      lGen: "🐾 लिंग / Gender:",
+      male: "Male (नर ♂)",
+      female: "Female (मादा ♀)",
+      lPar: "👨‍👩‍👧 पेरेंट्स / मालिक:",
+      lCit: "📍 शहर / City:",
+      lAlt: "📱 दूसरा नंबर / Alt No:",
+      lNat: " स्वभाव / Nature:",
+      hint: '💡 "लाइव लोकेशन भेजें" दबाकर मालिक को लोकेशन भेजें',
+      locating: "⏳ लोकेशन ली जा रही है...",
+      perm: "⏳ Allow पर क्लिक करें, सीधा WhatsApp खुलेगा...",
+      done: "✅ लोकेशन मिल गई! WhatsApp खुल रहा है...",
+      denied: "⚠️ ब्राउज़र में लोकेशन Allow करें।"
+    },
+    en: {
+      btnGps: "📍 Share Live Location (WhatsApp)",
+      btnCall: "📞 Call Pet Parents Now",
+      btnWa: "💬 Chat on WhatsApp",
+      btnAltCall: "📞 Call (Alt No.)",
+      btnAltWa: "💬 WhatsApp (Alt)",
+      btnMail: "📧 Alert Parents via Email",
+      vaxY: "💉 Fully Vaccinated",
+      vaxN: "⚠️ Vaccination Pending",
+      lGen: "🐾 Gender:",
+      male: "Male ♂",
+      female: "Female ♀",
+      lPar: "👨‍👩‍👧 Parents / Owner:",
+      lCit: "📍 City / Residence:",
+      lAlt: "📱 Alt Contact No:",
+      lNat: " Note / Nature:",
+      hint: '💡 Tap "Share Live Location" to send GPS location',
+      locating: "⏳ Fetching GPS location...",
+      perm: "⏳ Tap Allow, WhatsApp will open automatically...",
+      done: "✅ Location acquired! Opening WhatsApp...",
+      denied: "⚠️ Please allow location permission."
+    },
+    mr: {
+      btnGps: "📍 लाइव्ह लोकेशन पाठवा (WhatsApp)",
+      btnCall: "📞 पालकांना कॉल करा (Call)",
+      btnWa: "💬 WhatsApp वर संपर्क करा",
+      btnAltCall: "📞 दुसरा नंबर (Call)",
+      btnAltWa: "💬 WhatsApp (Alt)",
+      btnMail: "📧 ईमेल पाठवा (Gmail)",
+      vaxY: "💉 पूर्ण लसीकरण झाले आहे",
+      vaxN: "⚠️ लसीकरण बाकी आहे",
+      lGen: "🐾 लिंग / Gender:",
+      male: "Male (नर ♂)",
+      female: "Female (मादी ♀)",
+      lPar: "👨‍👩‍👧 पालक / मालक:",
+      lCit: "📍 शहर / City:",
+      lAlt: "📱 दुसरा संपर्क नंबर:",
+      lNat: " स्वभाव / माहिती:",
+      hint: '💡 "लाइव्ह लोकेशन पाठवा" दाबून लोकेशन पाठवा',
+      locating: "⏳ लोकेशन शोधत आहे...",
+      perm: "⏳ Allow करा, थेट WhatsApp उघडेल...",
+      done: "✅ लोकेशन मिळाले! WhatsApp उघडत आहे...",
+      denied: "⚠️ कृपया लोकेशन परवानगी द्या."
+    },
+    bn: {
+      btnGps: "📍 লাইভ লোকেশন পাঠান (WhatsApp)",
+      btnCall: "📞 মালিককে কল করুন (Call)",
+      btnWa: "💬 WhatsApp-এ মেসেজ করুন",
+      btnAltCall: "📞 বিকল্প নম্বর (Call)",
+      btnAltWa: "💬 WhatsApp (Alt)",
+      btnMail: "📧 ইমেল পাঠান (Gmail)",
+      vaxY: "💉 সম্পূর্ণ টিকাপ্রাপ্ত",
+      vaxN: "⚠️ টিকা বাকি আছে",
+      lGen: "🐾 লিঙ্গ / Gender:",
+      male: "Male (পুরুষ ♂)",
+      female: "Female (মহিলা ♀)",
+      lPar: "👨‍👩‍👧 অভিভাবক / মালিক:",
+      lCit: "📍 শহর / City:",
+      lAlt: "📱 বিকল্প নম্বর:",
+      lNat: " আচরণ / স্বভাব:",
+      hint: '💡 লাইভ লোকেশন পাঠাতে ট্যাপ করুন',
+      locating: "⏳ লোকেশন খোঁজা হচ্ছে...",
+      perm: "⏳ Allow করুন, WhatsApp খুলবে...",
+      done: "✅ লোকেশন পাওয়া গেছে!",
+      denied: "⚠️ অনুগ্রহ করে Allow করুন।"
+    },
+    ta: {
+      btnGps: "📍 நேரலை இருப்பிடம் (WhatsApp)",
+      btnCall: "📞 உரிமையாளரை அழைக்கவும்",
+      btnWa: "💬 WhatsApp இல் பேசவும்",
+      btnAltCall: "📞 மாற்று எண் (Call)",
+      btnAltWa: "💬 WhatsApp (Alt)",
+      btnMail: "📧 மின்னஞ்சல் (Gmail)",
+      vaxY: "💉 தடுப்பூசி போடப்பட்டது",
+      vaxN: "⚠️ தடுப்பூசி போடப்படவில்லை",
+      lGen: "🐾 பாலினம் / Gender:",
+      male: "Male (ஆண் ♂)",
+      female: "Female (பெண் ♀)",
+      lPar: "👨‍👩‍👧 உரிமையாளர்:",
+      lCit: "📍 நகரம் / ஊர்:",
+      lAlt: "📱 மாற்று எண்:",
+      lNat: " குணம் / குறிப்பு:",
+      hint: '💡 இருப்பிடத்தை அனுப்ப மேலே தட்டவும்',
+      locating: "⏳ இருப்பிடம் பெறப்படுகிறது...",
+      perm: "⏳ Allow செய்யவும், WhatsApp திறக்கும்...",
+      done: "✅ இருப்பிடம் பெறப்பட்டது!",
+      denied: "⚠️ அனுமதி அளிக்கவும்."
+    },
+    te: {
+      btnGps: "📍 లైవ్ లొకేషన్ (WhatsApp)",
+      btnCall: "📞 కాల్ చేయండి",
+      btnWa: "💬 WhatsApp లో చాట్ చేయండి",
+      btnAltCall: "📞 మరో నంబర్ (Call)",
+      btnAltWa: "💬 WhatsApp (Alt)",
+      btnMail: "📧 ఈమెయిల్ (Gmail)",
+      vaxY: "💉 టీకాలు పూర్తయ్యాయి",
+      vaxN: "⚠️ టీకాలు వేయలేదు",
+      lGen: "🐾 లింగం / Gender:",
+      male: "Male (మగ ♂)",
+      female: "Female (ఆడ ♀)",
+      lPar: "👨‍👩‍👧 యజమాని / పేరెంట్స్:",
+      lCit: "📍 నగరం / ఊరు:",
+      lAlt: "📱 ప్రత్యామ్నాయ నంబర్:",
+      lNat: " ప్రవర్తన / వివరాలు:",
+      hint: '💡 లొకేషన్ పంపడానికి నొక్కండి',
+      locating: "⏳ లొకేషన్ తీసుకుంటోంది...",
+      perm: "⏳ Allow చేయండి, WhatsApp తెరుచుకుంటుంది...",
+      done: "✅ లొకేషన్ దొరికింది!",
+      denied: "⚠️ దయచేసి Allow చేయండి."
+    },
+    kn: {
+      btnGps: "📍 ಲೈವ್ ಲೊಕೇಶನ್ (WhatsApp)",
+      btnCall: "📞 ಕರೆ ಮಾಡಿ",
+      btnWa: "💬 WhatsApp ನಲ್ಲಿ ಸಂದೇಶ",
+      btnAltCall: "📞 ಪರ್ಯಾಯ ಸಂಖ್ಯೆ (Call)",
+      btnAltWa: "💬 WhatsApp (Alt)",
+      btnMail: "📧 ಇಮೇಲ್ (Gmail)",
+      vaxY: "💉 ಲಸಿಕೆ ಹಾಕಲಾಗಿದೆ",
+      vaxN: "⚠️ ಲಸಿಕೆ ಬಾಕಿ ಇದೆ",
+      lGen: "🐾 ಲಿಂಗ / Gender:",
+      male: "Male (ಗಂಡು ♂)",
+      female: "Female (ಹೆಣ್ಣು ♀)",
+      lPar: "👨‍👩‍👧 ಮಾಲೀಕರು / ಪೋಷಕರು:",
+      lCit: "📍 ನಗರ / ಊರು:",
+      lAlt: "📱 ಪರ್ಯಾಯ ಸಂಖ್ಯೆ:",
+      lNat: " ಸ್ವಭಾವ / ಟಿಪ್ಪಣಿ:",
+      hint: '💡 ಲೊಕೇಶನ್ ಕಳುಹಿಸಲು ಬಟನ್ ಒತ್ತಿ',
+      locating: "⏳ ಪಡೆಯಲಾಗುತ್ತಿದೆ...",
+      perm: "⏳ Allow ಮಾಡಿ, WhatsApp ತೆರೆಯುತ್ತದೆ...",
+      done: "✅ ಲೊಕೇಶನ್ ಸಿಕ್ಕಿದೆ!",
+      denied: "⚠️ Allow ಮಾಡಿ."
+    }
+  };
+
+  function setLanguage(lang) {
+    currentLang = lang;
+    document.getElementById("langSelect").value = lang;
+    const t = tData[lang] || tData.en;
+    const spec = speciesDict[speciesCategory] || speciesDict.pet;
+
+    document.getElementById("btnGps").innerText = t.btnGps;
+    document.getElementById("btnCall").innerText = t.btnCall;
+    document.getElementById("btnWa").innerText = t.btnWa;
+    document.getElementById("btnAltCall").innerText = t.btnAltCall;
+    document.getElementById("btnAltWa").innerText = t.btnAltWa;
+    document.getElementById("btnMail").innerText = t.btnMail;
+    document.getElementById("lblGender").innerText = t.lGen;
+    document.getElementById("lblParents").innerText = t.lPar;
+    document.getElementById("lblCity").innerText = t.lCit;
+    document.getElementById("lblAlt").innerText = t.lAlt;
+    document.getElementById("lblNature").innerHTML = `${spec.emoji} ${t.lNat}`;
+    document.getElementById("gpsStatus").innerText = t.hint;
+
+    document.getElementById("petBreed").innerText = `${rawBreed} • ${spec[lang] || spec.en}`;
+    document.getElementById("speciesIcon").innerText = spec.emoji;
+    document.getElementById("petGender").innerText = isFemale ? t.female : t.male;
+
+    const vBox = document.getElementById("vaxBox");
+    vBox.className = isVaccinated ? "vax-banner vax-yes" : "vax-banner vax-no";
+    vBox.innerHTML = isVaccinated ? t.vaxY : t.vaxN;
+    document.getElementById("natureText").innerText = rawSheetNote;
+  }
+
+  const params = new URLSearchParams(window.location.search);
+  const currentId = (params.get('id') || '101').trim();
+  document.getElementById("dispId").innerText = "TAG #" + currentId;
+
+  function loadInstantPhoto(photoValue) {
+    if (!photoValue) return;
+    const img = document.getElementById("petImg");
+    const placeholder = document.getElementById("avatarPlaceholder");
+    let val = photoValue.trim();
+
+    if (!val.startsWith("http")) {
+      val = "https://shekharvasava998-stack.github.io/Tag-/" + val;
+    } else if (val.includes("github.com") && val.includes("/blob/")) {
+      val = val.replace("github.com", "raw.githubusercontent.com").replace("/blob/", "/");
+    } else if (val.includes("drive.google.com")) {
+      const match = val.match(/\/d\/([a-zA-Z0-9_-]+)/) || val.match(/id=([a-zA-Z0-9_-]+)/);
+      if (match && match[1]) val = "https://lh3.googleusercontent.com/d/" + match[1] + "=w1000";
+    }
+
+    img.src = val;
+    img.onload = function() {
+      img.style.display = "block";
+      placeholder.style.display = "none";
+    };
+    img.onerror = function() {
+      img.src = "https://raw.githubusercontent.com/shekharvasava998-stack/Tag-/main/" + photoValue.trim();
+      img.onload = function() {
+        img.style.display = "block";
+        placeholder.style.display = "none";
+      };
+    };
+  }
+
+  function parseCSV(text) {
+    const lines = text.split(/\r?\n/);
+    return lines.map(line => {
+      const row = [];
+      let insideQuote = false;
+      let entry = '';
+      for (let i = 0; i < line.length; i++) {
+        const char = line[i];
+        if (char === '"' || char === "'") { insideQuote = !insideQuote; }
+        else if (char === ',' && !insideQuote) { row.push(entry.trim()); entry = ''; }
+        else { entry += char; }
+      }
+      row.push(entry.trim());
+      return row;
+    });
+  }
+
+  const sheetUrl = "https://docs.google.com/spreadsheets/d/1-5xv254drMlUyuT1-gcFY503b5AXNF3D0nge50wc8A0/export?format=csv";
+
+  fetch(sheetUrl)
+    .then(res => res.text())
+    .then(csv => {
+      const rows = parseCSV(csv);
+      let foundRow = null;
+
+      for (let i = 1; i < rows.length; i++) {
+        if (rows[i][0] && rows[i][0] === currentId) {
+          foundRow = rows[i];
+          break;
+        }
+      }
+
+      if (foundRow) {
+        petDisplayName = foundRow[1] || 'COCO';
+        document.getElementById("petName").innerText = petDisplayName;
+
+        rawBreed = foundRow[2] || 'Indian';
+        const bLow = rawBreed.toLowerCase();
+        if (bLow.includes("cat") || bLow.includes("બિલાડી") || bLow.includes("बिल्ली")) speciesCategory = "cat";
+        else if (bLow.includes("monkey") || bLow.includes("વાંદરો") || bLow.includes("बंदर")) speciesCategory = "monkey";
+        else if (bLow.includes("cow") || bLow.includes("ગાય") || bLow.includes("गाय")) speciesCategory = "cow";
+        else if (bLow.includes("rabbit") || bLow.includes("સસલું")) speciesCategory = "rabbit";
+        else if (bLow.includes("bird") || bLow.includes("parrot") || bLow.includes("પક્ષી")) speciesCategory = "bird";
+        else speciesCategory = "dog";
+
+        document.getElementById("avatarPlaceholder").innerText = (speciesDict[speciesCategory] || speciesDict.pet).emoji;
+        document.getElementById("parentName").innerText = foundRow[3] || 'Divya';
+
+        const gText = (foundRow[4] || 'Male').toLowerCase();
+        isFemale = gText.includes("f") || gText.includes("female") || gText.includes("માદા");
+
+        const vText = (foundRow[5] || 'Yes').toLowerCase();
+        isVaccinated = !(vText.includes("no") || vText.includes("નથી"));
+
+        let ph = (foundRow[6] || '8160953780').replace(/[^0-9]/g, '');
+        if (ph.length === 10) ph = "91" + ph;
+        targetPhone = ph;
+        document.getElementById("btnCall").href = "tel:" + ph;
+        document.getElementById("btnWa").href = `https://wa.me/${ph}?text=Hello, mane tamaro pet ${petDisplayName} malyo chhe.`;
+
+        if (foundRow[7]) document.getElementById("ownerCity").innerText = foundRow[7];
+        if (foundRow[8]) rawSheetNote = foundRow[8];
+        if (foundRow[9]) loadInstantPhoto(foundRow[9]);
+        if (foundRow[10] && foundRow[10].includes("@")) targetEmail = foundRow[10].trim();
+
+        if (foundRow[11]) {
+          let alt = foundRow[11].replace(/[^0-9]/g, '');
+          if (alt.length >= 10) {
+            if (alt.length === 10) alt = "91" + alt;
+            altPhone = alt;
+            document.getElementById("btnAltCall").href = "tel:" + alt;
+            document.getElementById("btnAltWa").href = `https://wa.me/${alt}?text=Hello, mane tamaro pet ${petDisplayName} malyo chhe.`;
+            document.getElementById("altContactRow").style.display = "grid";
+            document.getElementById("altPhoneRow").style.display = "flex";
+            document.getElementById("altPhoneDisplay").innerText = foundRow[11].trim();
+          }
+        }
+        setLanguage('gu');
+
+        // Silent pre-cache location in background if already allowed
+        if ("geolocation" in navigator) {
+          navigator.geolocation.getCurrentPosition(
+            (pos) => {
+              cachedLocationUrl = `https://www.google.com/maps?q=${pos.coords.latitude},${pos.coords.longitude}`;
+            },
+            () => {},
+            { enableHighAccuracy: false, maximumAge: 300000, timeout: 5000 }
+          );
+        }
+      }
+    })
+    .catch(e => console.log(e));
+
+  // 1-Tap Instant Location Flow (Allow karta j seedhu WhatsApp)
+  function sendLocationNow() {
+    const s = document.getElementById("gpsStatus");
+    const btn = document.getElementById("btnGps");
+    const t = tData[currentLang] || tData.en;
+
+    if (!("geolocation" in navigator)) {
+      alert("No GPS available in this browser");
+      return;
+    }
+
+    // Jo pehle thi location maleli hoy to instant send karo
+    if (cachedLocationUrl) {
+      btn.innerText = "✅ WhatsApp...";
+      s.innerText = t.done;
+      const text = encodeURIComponent(`🚨 EMERGENCY: Found pet ${petDisplayName}!\n📍 Live Location:\n${cachedLocationUrl}`);
+      window.location.href = `https://wa.me/${targetPhone}?text=${text}`;
+      return;
+    }
+
+    if (isRequestingLocation) return;
+    isRequestingLocation = true;
+
+    btn.innerText = t.locating;
+    s.innerText = t.perm;
+
+    // Direct High-Priority Fetch with 25s comfortable timeout for user to tap 'Allow'
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        isRequestingLocation = false;
+        const lat = pos.coords.latitude;
+        const lon = pos.coords.longitude;
+        cachedLocationUrl = `https://www.google.com/maps?q=${lat},${lon}`;
+        btn.innerText = "✅ WhatsApp...";
+        s.innerText = t.done;
+
+        if (targetPhone) {
+          const text = encodeURIComponent(`🚨 EMERGENCY: Found pet ${petDisplayName}!\n📍 Live Location:\n${cachedLocationUrl}`);
+          // Direct navigation trigger on permission resolution
+          window.location.href = `https://wa.me/${targetPhone}?text=${text}`;
+        }
+      },
+      (err) => {
+        isRequestingLocation = false;
+        btn.innerText = t.btnGps;
+        if (err.code === 1) {
+          s.innerText = t.denied;
+          alert("કૃપા કરીને બ્રાઉઝરમાં લોકેશન પરમિશન Allow (ચાલુ) કરો.");
+        } else {
+          // Timeout athva low signal ma pan WhatsApp open kari dese
+          btn.innerText = "✅ WhatsApp...";
+          s.innerText = t.done;
+          const text = encodeURIComponent(`🚨 EMERGENCY: Found pet ${petDisplayName}! (GPS timeout, please call back).`);
+          window.location.href = `https://wa.me/${targetPhone}?text=${text}`;
+        }
+      },
+      { enableHighAccuracy: true, timeout: 25000, maximumAge: 60000 }
+    );
+  }
+
+  function sendEmailAlert() {
+    const emailTo = targetEmail || "shekharvasava998@gmail.com";
+    const loc = cachedLocationUrl || "(Location not shared yet. Please contact)";
+    const subject = encodeURIComponent(`🚨 LOST PET ALERT: Found ${petDisplayName}!`);
+    const body = encodeURIComponent(`Hello,\n\nI have found your pet ${petDisplayName}.\n\nLocation: ${loc}`);
+    window.location.href = `mailto:${emailTo}?subject=${subject}&body=${body}`;
+  }
+</script>
+
+</body>
+</html>
