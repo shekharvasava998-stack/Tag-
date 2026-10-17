@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="gu">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Smart Pet Digital ID • Emergency Tag</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+    body { background: #0f172a; min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 14px 10px; }
+    
+    .card {
+      width: 100%;
+      max-width: 410px;
+      background: #ffffff;
+      border-radius: 26px;
+      overflow: hidden;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.4);
+      text-align: center;
+      position: relative;
+    }
+
+    .lang-bar {
+      background: #1e293b;
+      padding: 8px 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .lang-title { color: #94a3b8; font-size: 11px; font-weight: 700; }
+    .lang-select {
+      background: #334155;
+      color: #ffffff;
+      border: 1px solid #475569;
+      padding: 4px 8px;
+      border-radius: 8px;
+      font-size: 11.5px;
+      font-weight: 700;
+      outline: none;
+    }
+
+    .emergency-header {
+      background: #e11d48;
+      color: white;
+      padding: 10px 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 11px;
+      font-weight: 800;
+    }
+    .badge-id {
+      background: rgba(255, 255, 255, 0.25);
+      padding: 3px 8px;
+      border-radius: 10px;
+    }
+
+    .brand-top-badge {
+      position: absolute;
+      top: 48px;
+      right: 12px;
+      z-index: 10;
+      background: rgba(255, 255, 255, 0.95);
+      padding: 4px 8px;
+      border-radius: 12px;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+    }
+    .brand-top-logo { height: 38px; width: auto; display: block; }
+
+    .hero {
+      background: linear-gradient(180deg, #ffe4e6 0%, #ffffff 100%);
+      padding: 20px 14px 10px;
+      position: relative;
+    }
+    .avatar-wrapper {
+      position: relative;
+      width: 145px;
+      height: 145px;
+      margin: 0 auto 10px;
+    }
+    .pet-photo {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 4px solid #f43f5e;
+      box-shadow: 0 8px 18px rgba(244,63,94,0.25);
+      display: none;
+    }
+    .photo-placeholder {
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%;
+      border-radius: 50%;
+      background: #f1f5f9;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 44px;
+      border: 4px solid #f43f5e;
+    }
+    .species-tag {
+      position: absolute;
+      bottom: 2px;
+      right: 2px;
+      background: #0f172a;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+    }
+    .pet-name { font-size: 26px; font-weight: 800; color: #0f172a; text-transform: uppercase; }
+    .pet-sub { display: inline-block; margin-top: 4px; padding: 3px 12px; background: #f1f5f9; color: #475569; font-size: 12.5px; font-weight: 700; border-radius: 20px; }
+
+    .actions { padding: 10px 16px; display: flex; flex-direction: column; gap: 8px; }
+    .btn { display: flex; align-items: center; justify-content: center; gap: 6px; padding: 12px; border-radius: 14px; text-decoration: none; font-size: 15px; font-weight: 800; color: white; border: none; cursor: pointer; }
+    .btn:active { transform: scale(0.98); }
+    .btn-gps { background: #2563eb; }
+    .btn-call { background: #10b981; }
+    .btn-wa { background: #16a34a; }
+    .btn-alt-row { display: none; grid-template-columns: 1fr 1fr; gap: 6px; }
+    .btn-alt { background: #334155; font-size: 12.5px; padding: 9px; }
+    .btn-mail { background: #dc2626; font-size: 14px; }
+
+    .vax-banner {
+      margin: 0 16px 10px;
+      padding: 8px;
+      border-radius: 12px;
+      font-size: 12.5px;
+      font-weight: 700;
+    }
+    .vax-yes { background: #dcfce7; color: #15803d; }
+    .vax-no { background: #fee2e2; color: #b91c1c; }
+
+    .info-card {
+      margin: 0 16px 12px;
+      background: #f8fafc;
+      border-radius: 16px;
+      border: 1px solid #e2e8f0;
+      padding: 10px 14px;
+      text-align: left;
+    }
+    .info-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 6px 0;
+      border-bottom: 1px dashed #e2e8f0;
+      font-size: 13px;
+    }
+    .info-row:last-child { border-bottom: none; }
+    .lbl { color: #64748b; font-weight: 600; }
+    .val { color: #0f172a; font-weight: 700; }
+
+    .nature-box {
+      margin: 0 16px 12px;
+      background: #eff6ff;
+      border-left: 4px solid #3b82f6;
+      border-radius: 10px;
+      padding: 10px 12px;
+      font-size: 12.5px;
+      color: #1e40af;
+      text-align: left;
+    }
+
+    .gps-box {
+      background: #f1f5f9;
+      padding: 10px;
+      font-size: 11.5px;
+      font-weight: 600;
+      color: #475569;
+    }
+  </style>
+</head>
+<body>
+
+<div class="card">
+  <div class="lang-bar">
+    <span class="lang-title">🇮🇳 ભાષા / Language:</span>
+    <select class="lang-select" id="langSelect" onchange="setLanguage(this.value)">
+      <option value="gu" selected>ગુજરાતી</option>
+      <option value="hi">हिन्दी</option>
+      <option value="en">English</option>
+      <option value="mr">मराठी</option>
+    </select>
+  </div>
+
+  <div class="emergency-header">
+    <span>EMERGENCY LOST PET ID</span>
+    <span class="badge-id" id="dispId">TAG #101</span>
+  </div>
+
+  <div class="brand-top-badge">
+    <img src="https://raw.githubusercontent.com/shekharvasava998-stack/Tag-/main/IMG_6026.png" alt="MyPetTag" class="brand-top-logo">
+  </div>
+
+  <div class="hero">
+    <div class="avatar-wrapper">
+      <div class="photo-placeholder" id="avatarPlaceholder">🐶</div>
+      <img id="petImg" class="pet-photo" src="" alt="Pet Photo" referrerpolicy="no-referrer">
+      <div class="species-tag" id="speciesIcon">🐶</div>
+    </div>
+    <div class="pet-name" id="petName">COCO</div>
+    <div class="pet-sub" id="petBreed">Indian • Dog</div>
+  </div>
+
+  <div class="actions">
+    <button class="btn btn-gps" id="btnGps" onclick="sendLocationNow()">
+      📍 શેર લાઇવ લોકેશન (WhatsApp)
+    </button>
+    
+    <a id="btnCall" href="tel:918160953780" class="btn btn-call">📞 વાલીને ફોન કરો (Call)</a>
+    <a id="btnWa" href="https://wa.me/918160953780" class="btn btn-wa">💬 WhatsApp પર વાત કરો</a>
+
+    <div class="btn-alt-row" id="altContactRow">
+      <a id="btnAltCall" href="#" class="btn btn-alt">📞 બીજો નંબર (Call)</a>
+      <a id="btnAltWa" href="#" class="btn btn-alt">💬 WhatsApp (Alt)</a>
+    </div>
+
+    <button class="btn btn-mail" id="btnMail" onclick="sendEmailAlert()">
+      📧 ઇમેઇલ એલર્ટ મોકલો (Gmail)
+    </button>
+  </div>
+
+  <div id="vaxBox" class="vax-banner vax-yes">
+    💉 Fully Vaccinated (રસીકરણ થયેલ છે)
+  </div>
+
+  <div class="info-card">
+    <div class="info-row">
+      <span class="lbl" id="lblGender">🐾 જાતિ / Gender:</span>
+      <span class="val" id="petGender">Male ♂</span>
+    </div>
+    <div class="info-row">
+      <span class="lbl" id="lblParents">👨‍👩‍👧 Parents / વાલી:</span>
+      <span class="val" id="parentName">Divya</span>
+    </div>
+    <div class="info-row">
+      <span class="lbl" id="lblCity">📍 City / રહેઠાણ:</span>
+      <span class="val" id="ownerCity">Surat, adajan</span>
+    </div>
+    <div class="info-row" id="altPhoneRow" style="display: none;">
+      <span class="lbl" id="lblAlt">📱 બીજો નંબર / Alt No:</span>
+      <span class="val" id="altPhoneDisplay">-</span>
+    </div>
+  </div>
+
+  <div class="nature-box" id="petNatureBox">
+    <b id="lblNature">🐶 નોંધ / Nature:</b> <span id="natureText">My baby coco is very sweet and friendly</span>
+  </div>
+
+  <div class="gps-box" id="gpsStatus">
+    💡 "શેર લાઇવ લોકેશન" દબાવીને માલિકને કરંટ લોકેશન મોકલો
+  </div>
+</div>
+
+<script>
+  let targetPhone = "918160953780";
+  let altPhone = "";
+  let targetEmail = "";
+  let petDisplayName = "COCO";
+  let rawBreed = "Indian";
+  let speciesCategory = "dog";
+  let isVaccinated = true;
+  let isFemale = false;
+  let rawSheetNote = "My baby coco is very sweet and friendly";
+  let currentLang = 'gu';
+  let cachedLocationUrl = "";
+
+  const speciesDict = {
+    dog: { emoji: "🐶", gu: "શ્વાન", hi: "कुत्ता", en: "Dog", mr: "कुत्रा" },
+    cat: { emoji: "🐱", gu: "બિલાડી", hi: "बिल्ली", en: "Cat", mr: "मांजर" },
+    monkey: { emoji: "🐒", gu: "વાંદરો", hi: "बंदर", en: "Monkey", mr: "माकड" },
+    cow: { emoji: "🐮", gu: "ગાય", hi: "गाय", en: "Cow", mr: "गाय" },
+    rabbit: { emoji: "🐰", gu: "સસલું", hi: "खरगोश", en: "Rabbit", mr: "ससा" },
+    bird: { emoji: "🦜", gu: "પક્ષી", hi: "पक्षी", en: "Bird", mr: "पक्षी" },
+    pet: { emoji: "🐾", gu: "પાલતુ", hi: "पालतू", en: "Pet", mr: "पाळीव" }
+  };
+
+  const tData = {
+    gu: {
+      btnGps: "📍 શેર લાઇવ લોકેશન (WhatsApp)",
+      btnCall: "📞 વાલીને ફોન કરો (Call)",
+      btnWa: "💬 WhatsApp પર વાત કરો",
+      btnAltCall: "📞 બીજો નંબર (Call)",
+      btnAltWa: "💬 WhatsApp (Alt)",
+      btnMail: "📧 ઇમેઇલ એલર્ટ મોકલો (Gmail)",
+      vaxY: "💉 Fully Vaccinated (રસીકરણ થયેલ છે)",
+      vaxN: "⚠️ Vaccination Pending (રસીકરણ બાકી છે)",
+      lGen: "🐾 જાતિ / Gender:",
+      male: "Male (નર ♂)",
+      female: "Female (માદા ♀)",
+      lPar: "👨‍👩‍👧 Parents / વાલી:",
+      lCit: "📍 City / રહેઠાણ:",
+      lAlt: "📱 બીજો નંબર / Alt No:",
+      lNat: " નોંધ / Nature:",
+      hint: '💡 "શેર લાઇવ લોકેશન" દબાવીને માલિકને કરંટ લોકેશન મોકલો',
+      locating: "⏳ લોકેશન મેળવી રહ્યું છે...",
+      perm: "⏳ GPS સિગ્નલ ચકાસી રહ્યું છે...",
+      done: "✅ લોકેશન મળી ગયું! WhatsApp ખુલે છે...",
+      denied: "⚠️ લોકેશન પરમિશન બ્રાઉઝરમાં Allow કરો."
+    },
+    hi: {
+      btnGps: "📍 लाइव लोकेशन भेजें (WhatsApp)",
+      btnCall: "📞 पेरेंट्स को कॉल करें (Call)",
+      btnWa: "💬 WhatsApp पर बात करें",
+      btnAltCall: "📞 दूसरा नंबर (Call)",
+      btnAltWa: "💬 WhatsApp (Alt)",
+      btnMail: "📧 ईमेल अलर्ट भेजें (Gmail)",
+      vaxY: "💉 फुल्ली वैक्सीनेटेड (टीकाकरण पूर्ण)",
+      vaxN: "⚠️ वैक्सीनेशन बाकी है",
+      lGen: "🐾 लिंग / Gender:",
+      male: "Male (नर ♂)",
+      female: "Female (मादा ♀)",
+      lPar: "👨‍👩‍👧 पेरेंट्स / मालिक:",
+      lCit: "📍 शहर / City:",
+      lAlt: "📱 दूसरा नंबर / Alt No:",
+      lNat: " स्वभाव / Nature:",
+      hint: '💡 "लाइव लोकेशन भेजें" दबाकर मालिक को लोकेशन भेजें',
+      locating: "⏳ लोकेशन ली जा रही है...",
+      perm: "⏳ GPS सिग्नल जांच रहा है...",
+      done: "✅ लोकेशन मिल गई! WhatsApp खुल रहा है...",
+      denied: "⚠️ ब्राउज़र में लोकेशन Allow करें।"
+    },
+    en: {
+      btnGps: "📍 Share Live Location (WhatsApp)",
+      btnCall: "📞 Call Pet Parents Now",
+      btnWa: "💬 Chat on WhatsApp",
+      btnAltCall: "📞 Call (Alt No.)",
+      btnAltWa: "💬 WhatsApp (Alt)",
+      btnMail: "📧 Alert Parents via Email",
+      vaxY: "💉 Fully Vaccinated",
+      vaxN: "⚠️ Vaccination Pending",
+      lGen: "🐾 Gender:",
+      male: "Male ♂",
+      female: "Female ♀",
+      lPar: "👨‍👩‍👧 Parents / Owner:",
+      lCit: "📍 City / Residence:",
+      lAlt: "📱 Alt Contact No:",
+      lNat: " Note / Nature:",
+      hint: '💡 Tap "Share Live Location" to send GPS location',
+      locating: "⏳ Fetching GPS location...",
+      perm: "⏳ Checking GPS signal...",
+      done: "✅ Location acquired! Opening WhatsApp...",
+      denied: "⚠️ Please allow location permission."
+    },
+    mr: {
+      btnGps: "📍 लाइव्ह लोकेशन पाठवा (WhatsApp)",
+      btnCall: "📞 पालकांना कॉल करा (Call)",
+      btnWa: "💬 WhatsApp वर संपर्क करा",
+      btnAltCall: "📞 दुसरा नंबर (Call)",
+      btnAltWa: "💬 WhatsApp (Alt)",
+      btnMail: "📧 ईमेल पाठवा (Gmail)",
+      vaxY: "💉 पूर्ण लसीकरण झाले आहे",
+      vaxN: "⚠️ लसीकरण बाकी आहे",
+      lGen: "🐾 लिंग / Gender:",
+      male: "Male (नर ♂)",
+      female: "Female (मादी ♀)",
+      lPar: "👨‍👩‍👧 पालक / मालक:",
+      lCit: "📍 शहर / City:",
+      lAlt: "📱 दुसरा संपर्क नंबर:",
+      lNat: " स्वभाव / माहिती:",
+      hint: '💡 "लाइव्ह लोकेशन पाठवा" दाबून लोकेशन पाठवा',
+      locating: "⏳ लोकेशन शोधत आहे...",
+      perm: "⏳ GPS तपासत आहे...",
+      done: "✅ लोकेशन मिळाले! WhatsApp उघडत आहे...",
+      denied: "⚠️ कृपया लोकेशन परवानगी द्या."
+    }
+  };
+
+  function setLanguage(lang) {
+    currentLang = lang;
+    document.getElementById("langSelect").value = lang;
+    const t = tData[lang] || tData.en;
+    const spec = speciesDict[speciesCategory] || speciesDict.pet;
+
+    document.getElementById("btnGps").innerText = t.btnGps;
+    document.getElementById("btnCall").innerText = t.btnCall;
+    document.getElementById("btnWa").innerText = t.btnWa;
+    document.getElementById("btnAltCall").innerText = t.btnAltCall;
+    document.getElementById("btnAltWa").innerText = t.btnAltWa;
+    document.getElementById("btnMail").innerText = t.btnMail;
+    document.getElementById("lblGender").innerText = t.lGen;
+    document.getElementById("lblParents").innerText = t.lPar;
+    document.getElementById("lblCity").innerText = t.lCit;
+    document.getElementById("lblAlt").innerText = t.lAlt;
+    document.getElementById("lblNature").innerHTML = `${spec.emoji} ${t.lNat}`;
+    document.getElementById("gpsStatus").innerText = t.hint;
+
+    document.getElementById("petBreed").innerText = `${rawBreed} • ${spec[lang] || spec.en}`;
+    document.getElementById("speciesIcon").innerText = spec.emoji;
+    document.getElementById("petGender").innerText = isFemale ? t.female : t.male;
+
+    const vBox = document.getElementById("vaxBox");
+    vBox.className = isVaccinated ? "vax-banner vax-yes" : "vax-banner vax-no";
+    vBox.innerHTML = isVaccinated ? t.vaxY : t.vaxN;
+    document.getElementById("natureText").innerText = rawSheetNote;
+  }
+
+  const params = new URLSearchParams(window.location.search);
+  const currentId = (params.get('id') || '101').trim();
+  document.getElementById("dispId").innerText = "TAG #" + currentId;
+
+  function loadInstantPhoto(url) {
+    if (!url) return;
+    const img = document.getElementById("petImg");
+    const placeholder = document.getElementById("avatarPlaceholder");
+    let finalUrl = url.trim();
+
+    if (!finalUrl.startsWith("http")) {
+      finalUrl = `https://shekharvasava998-stack.github.io/Tag-/${finalUrl}`;
+    } else if (finalUrl.includes("drive.google.com")) {
+      const dId = finalUrl.match(/\/d\/([a-zA-Z0-9_-]+)/) || finalUrl.match(/id=([a-zA-Z0-9_-]+)/);
+      if (dId && dId[1]) finalUrl = `https://lh3.googleusercontent.com/d/${dId[1]}=w1000`;
+    }
+
+    img.src = finalUrl;
+    img.onload = () => {
+      img.style.display = "block";
+      placeholder.style.display = "none";
+    };
+  }
+
+  function parseCSV(text) {
+    const lines = text.split(/\r?\n/);
+    return lines.map(line => {
+      const row = [];
+      let insideQuote = false;
+      let entry = '';
+      for (let i = 0; i < line.length; i++) {
+        const char = line[i];
+        if (char === '"' || char === "'") { insideQuote = !insideQuote; }
+        else if (char === ',' && !insideQuote) { row.push(entry.trim()); entry = ''; }
+        else { entry += char; }
+      }
+      row.push(entry.trim());
+      return row;
+    });
+  }
+
+  const sheetUrl = "https://docs.google.com/spreadsheets/d/1-5xv254drMlUyuT1-gcFY503b5AXNF3D0nge50wc8A0/export?format=csv";
+
+  fetch(sheetUrl)
+    .then(res => res.text())
+    .then(csv => {
+      const rows = parseCSV(csv);
+      let foundRow = null;
+
+      for (let i = 1; i < rows.length; i++) {
+        if (rows[i][0] && rows[i][0] === currentId) {
+          foundRow = rows[i];
+          break;
+        }
+      }
+
+      if (foundRow) {
+        petDisplayName = foundRow[1] || 'COCO';
+        document.getElementById("petName").innerText = petDisplayName;
+
+        rawBreed = foundRow[2] || 'Indian';
+        const bLow = rawBreed.toLowerCase();
+        if (bLow.includes("cat") || bLow.includes("બિલાડી") || bLow.includes("बिल्ली")) speciesCategory = "cat";
+        else if (bLow.includes("monkey") || bLow.includes("વાંદરો") || bLow.includes("बंदर")) speciesCategory = "monkey";
+        else if (bLow.includes("cow") || bLow.includes("ગાય") || bLow.includes("गाय")) speciesCategory = "cow";
+        else if (bLow.includes("rabbit") || bLow.includes("સસલું")) speciesCategory = "rabbit";
+        else if (bLow.includes("bird") || bLow.includes("parrot") || bLow.includes("પક્ષી")) speciesCategory = "bird";
+        else speciesCategory = "dog";
+
+        document.getElementById("avatarPlaceholder").innerText = (speciesDict[speciesCategory] || speciesDict.pet).emoji;
+        document.getElementById("parentName").innerText = foundRow[3] || 'Divya';
+
+        const gText = (foundRow[4] || 'Male').toLowerCase();
+        isFemale = gText.includes("f") || gText.includes("female") || gText.includes("માદા");
+
+        const vText = (foundRow[5] || 'Yes').toLowerCase();
+        isVaccinated = !(vText.includes("no") || vText.includes("નથી"));
+
+        let ph = (foundRow[6] || '8160953780').replace(/[^0-9]/g, '');
+        if (ph.length === 10) ph = "91" + ph;
+        targetPhone = ph;
+        document.getElementById("btnCall").href = "tel:" + ph;
+        document.getElementById("btnWa").href = `https://wa.me/${ph}?text=Hello, mane tamaro pet ${petDisplayName} malyo chhe.`;
+
+        if (foundRow[7]) document.getElementById("ownerCity").innerText = foundRow[7];
+        if (foundRow[8]) rawSheetNote = foundRow[8];
+        if (foundRow[9]) loadInstantPhoto(foundRow[9]);
+        if (foundRow[10] && foundRow[10].includes("@")) targetEmail = foundRow[10].trim();
+
+        if (foundRow[11]) {
+          let alt = foundRow[11].replace(/[^0-9]/g, '');
+          if (alt.length >= 10) {
+            if (alt.length === 10) alt = "91" + alt;
+            altPhone = alt;
+            document.getElementById("btnAltCall").href = "tel:" + alt;
+            document.getElementById("btnAltWa").href = `https://wa.me/${alt}?text=Hello, mane tamaro pet ${petDisplayName} malyo chhe.`;
+            document.getElementById("altContactRow").style.display = "grid";
+            document.getElementById("altPhoneRow").style.display = "flex";
+            document.getElementById("altPhoneDisplay").innerText = foundRow[11].trim();
+          }
+        }
+        setLanguage('gu');
+      }
+    })
+    .catch(e => console.log(e));
+
+  function sendLocationNow() {
+    const s = document.getElementById("gpsStatus");
+    const btn = document.getElementById("btnGps");
+    const t = tData[currentLang] || tData.en;
+
+    if (!("geolocation" in navigator)) return;
+
+    btn.innerText = t.locating;
+    s.innerText = t.perm;
+
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        const lat = pos.coords.latitude;
+        const lon = pos.coords.longitude;
+        cachedLocationUrl = `https://www.google.com/maps?q=${lat},${lon}`;
+        btn.innerText = "✅ WhatsApp...";
+        s.innerText = t.done;
+
+        if (targetPhone) {
+          const text = encodeURIComponent(`🚨 EMERGENCY: Found pet ${petDisplayName}!\n📍 Live Location:\n${cachedLocationUrl}`);
+          window.location.href = `https://wa.me/${targetPhone}?text=${text}`;
+        }
+      },
+      () => {
+        btn.innerText = t.btnGps;
+        s.innerText = t.denied;
+      },
+      { enableHighAccuracy: true, timeout: 8000 }
+    );
+  }
+
+  function sendEmailAlert() {
+    const emailTo = targetEmail || "shekharvasava998@gmail.com";
+    const loc = cachedLocationUrl || "(Location not shared yet)";
+    const subject = encodeURIComponent(`🚨 LOST PET ALERT: Found ${petDisplayName}!`);
+    const body = encodeURIComponent(`Hello,\n\nI have found your pet ${petDisplayName}.\n\nLocation: ${loc}`);
+    window.location.href = `mailto:${emailTo}?subject=${subject}&body=${body}`;
+  }
+</script>
+
+</body>
+</html>
