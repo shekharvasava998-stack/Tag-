@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>MyPetTag™ OS | 15-Screen Interactive Prototype</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@600;700;800&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            display: ['"Space Grotesk"', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              gold: '#E5B842',
+              dark: '#0A0E17',
+              surface: '#121826',
+              card: '#182132',
+              border: '#243048',
+              accent: '#3B82F6'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+  </style>
+</head>
+<body class="bg-[#06090F] text-slate-100 min-h-screen flex items-center justify-center p-0 md:p-6 font-sans">
+
+  <!-- PHONE CONTAINER WRAPPER -->
+  <div class="w-full max-w-md h-[100dvh] md:h-[860px] md:max-h-[92vh] bg-brand-dark md:rounded-[44px] md:border-[10px] md:border-[#1E2738] shadow-2xl flex flex-col relative overflow-hidden">
+    
+    <!-- TOP STATUS BAR / DEMO PILL -->
+    <header class="bg-brand-surface/90 backdrop-blur-md border-b border-brand-border px-5 pt-3 pb-2.5 flex items-center justify-between z-30 flex-shrink-0">
+      <div class="flex items-center gap-2">
+        <div class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></div>
+        <span class="font-display font-bold text-xs tracking-wider text-amber-400">MYPETTAG™</span>
+      </div>
+      <div class="flex items-center gap-2">
+        <span class="bg-amber-400/10 text-amber-400 text-[10px] font-bold px-2 py-0.5 rounded-full border border-amber-400/20 uppercase tracking-widest">Demo Sandbox</span>
+        <button onclick="navTo('screen-language')" class="text-xs text-slate-300 hover:text-white px-1.5 py-0.5 rounded bg-white/5 border border-white/10 font-bold">
+          <i class="fa-solid fa-globe text-amber-400 mr-1"></i><span id="currentLangLabel">EN</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- LOST PET GLOBAL TOP BANNER (Triggered when lost mode is ON) -->
+    <div id="globalLostBanner" class="hidden bg-gradient-to-r from-red-600 to-rose-600 text-white px-4 py-2 text-xs font-bold flex items-center justify-between z-20 flex-shrink-0 animate-pulse">
+      <div class="flex items-center gap-2">
+        <i class="fa-solid fa-triangle-exclamation text-base"></i>
+        <span>LOST PET ALERT ACTIVE!</span>
+      </div>
+      <button onclick="navTo('screen-found')" class="bg-white text-red-700 px-2.5 py-0.5 rounded-lg text-[10px] font-black uppercase hover:bg-slate-100">
+        Mark Found
+      </button>
+    </div>
+
+    <!-- MAIN SCROLLABLE VIEWPORT -->
+    <main id="appViewport" class="flex-1 overflow-y-auto no-scrollbar p-5 pb-24 relative">
+
+      <!-- SCREEN 1: WELCOME / INTRO -->
+      <section id="screen-welcome" class="space-y-6 flex flex-col items-center justify-center min-h-[75vh] text-center">
+        <div class="relative w-28 h-28 mx-auto flex items-center justify-center">
+          <div class="absolute inset-0 bg-amber-500/20 rounded-full blur-xl animate-pulse"></div>
+          <div class="w-24 h-24 rounded-3xl bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center shadow-xl border border-amber-300/30">
+            <i class="fa-solid fa-shield-dog text-4xl text-slate-950"></i>
+          </div>
+        </div>
+
+        <div class="space-y-2">
+          <h1 class="text-2xl font-black font-display text-white tracking-tight" data-i18n="welcome_title">Precision Protection for Your Best Friend</h1>
+          <p class="text-xs text-slate-400 leading-relaxed max-w-xs mx-auto" data-i18n="welcome_desc">
+            Aeronautical steel laser ID with instant QR Cloud Profile, GPS ping alerts, and 100% private phone masking.
+          </p>
+        </div>
+
+        <div class="w-full space-y-3 pt-4">
+          <button onclick="navTo('screen-dashboard')" class="w-full bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-slate-950 font-black py-3.5 rounded-2xl text-xs uppercase tracking-wider shadow-lg shadow-amber-500/20 flex items-center justify-center gap-2">
+            <span data-i18n="btn_explore">Explore The Demo</span>
+            <i class="fa-solid fa-arrow-right"></i>
+          </button>
+          <button onclick="openPublicPreview()" class="w-full bg-brand-surface hover:bg-brand-card border border-brand-border text-slate-300 font-bold py-3.5 rounded-2xl text-xs flex items-center justify-center gap-2">
+            <i class="fa-solid fa-qrcode text-amber-400"></i>
+            <span data-i18n="btn_view_public">View Sample Public Scan</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- SCREEN 2: OWNER DASHBOARD -->
+      <section id="screen-dashboard" class="hidden space-y-5">
+        <div class="bg-brand-card border border-brand-border rounded-3xl p-5 relative overflow-hidden shadow-xl">
+          <div class="flex items-center gap-4">
+            <div class="relative">
+              <img id="dashPetAvatar" src="https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=300&auto=format&fit=crop&q=80" alt="Pet Avatar" class="w-16 h-16 rounded-2xl object-cover border-2 border-amber-400 shadow-md">
+              <span id="dashStatusDot" class="w-3.5 h-3.5 rounded-full bg-emerald-500 border-2 border-brand-dark absolute -bottom-1 -right-1"></span>
+            </div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center gap-2">
+                <h2 id="dashPetName" class="font-display font-black text-xl text-white truncate">COCO</h2>
+                <span id="dashTagStatusBadge" class="bg-white/10 text-[10px] font-mono px-2 py-0.5 rounded text-slate-300">TAG #103</span>
+              </div>
+              <p id="dashPetBreed" class="text-xs text-slate-400 mt-0.5">Indie Dog • 2 Years</p>
+              <div class="flex items-center gap-2 mt-2">
+                <span id="dashModeIndicator" class="text-[10px] font-bold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">
+                  <i class="fa-solid fa-shield-check mr-1"></i> Safe At Home
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <button onclick="navTo('screen-profile-form')" class="bg-brand-surface hover:bg-brand-card border border-brand-border p-4 rounded-2xl text-left space-y-2 transition group">
+            <div class="w-9 h-9 rounded-xl bg-amber-400/10 flex items-center justify-center text-amber-400 group-hover:scale-105 transition">
+              <i class="fa-solid fa-id-card-clip"></i>
+            </div>
+            <div>
+              <p class="font-bold text-xs text-white" data-i18n="menu_edit_id">Edit Pet ID</p>
+              <p class="text-[10px] text-slate-400">Update medical & notes</p>
+            </div>
+          </button>
+
+          <button onclick="navTo('screen-scanner')" class="bg-brand-surface hover:bg-brand-card border border-brand-border p-4 rounded-2xl text-left space-y-2 transition group">
+            <div class="w-9 h-9 rounded-xl bg-blue-400/10 flex items-center justify-center text-blue-400 group-hover:scale-105 transition">
+              <i class="fa-solid fa-qrcode"></i>
+            </div>
+            <div>
+              <p class="font-bold text-xs text-white" data-i18n="menu_scan">Scan a Tag</p>
+              <p class="text-[10px] text-slate-400">Simulate link pairing</p>
+            </div>
+          </button>
+
+          <button id="btnLostAlertSettings" onclick="navTo('screen-lost-settings')" class="bg-brand-surface hover:bg-brand-card border border-brand-border p-4 rounded-2xl text-left space-y-2 transition group">
+            <div class="w-9 h-9 rounded-xl bg-purple-400/10 flex items-center justify-center text-purple-400 group-hover:scale-105 transition">
+              <i class="fa-solid fa-sliders"></i>
+            </div>
+            <div>
+              <p class="font-bold text-xs text-white" data-i18n="menu_privacy">Lost Alert Settings</p>
+              <p class="text-[10px] text-slate-400">Manage saved fields</p>
+            </div>
+          </button>
+
+          <button onclick="handleLostModeClick()" class="bg-brand-surface hover:bg-brand-card border border-brand-border p-4 rounded-2xl text-left space-y-2 transition group">
+            <div class="w-9 h-9 rounded-xl bg-rose-500/10 flex items-center justify-center text-rose-400 group-hover:scale-105 transition">
+              <i class="fa-solid fa-bell"></i>
+            </div>
+            <div>
+              <p id="dashLostBtnText" class="font-bold text-xs text-rose-400" data-i18n="menu_lost_mode">Lost Pet Mode</p>
+              <p id="dashLostBtnSub" class="text-[10px] text-slate-400">Trigger rescue broadcast</p>
+            </div>
+          </button>
+        </div>
+
+        <div class="bg-brand-surface border border-brand-border p-4 rounded-2xl space-y-3">
+          <div class="flex items-center justify-between">
+            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Hardware Pairing Status</span>
+            <span id="dashHardwarePill" class="text-[10px] font-bold text-amber-400 bg-amber-400/10 px-2 py-0.5 rounded-full border border-amber-400/20">Demo Tag Paired</span>
+          </div>
+          <div class="flex items-center justify-between text-xs font-mono bg-black/40 p-2.5 rounded-xl border border-white/5">
+            <span class="text-slate-400 truncate">mypettag.co.in/p?id=103</span>
+            <button onclick="openPublicPreview()" class="text-amber-400 hover:text-amber-300 font-bold ml-2 flex items-center gap-1">
+              <span>View</span> <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- SCREEN 3: PET PROFILE FORM -->
+      <section id="screen-profile-form" class="hidden space-y-5">
+        <div class="flex items-center justify-between">
+          <button onclick="navTo('screen-dashboard')" class="text-xs text-slate-400 hover:text-white flex items-center gap-1.5">
+            <i class="fa-solid fa-arrow-left"></i> Dashboard
+          </button>
+          <span class="text-xs font-bold text-amber-400 font-display">PET PROFILE</span>
+        </div>
+
+        <form id="petProfileForm" onsubmit="savePetProfile(event)" class="space-y-4">
+          <div class="flex items-center gap-4 bg-brand-surface p-3.5 rounded-2xl border border-brand-border">
+            <img id="formPhotoPreview" src="https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=300&auto=format&fit=crop&q=80" class="w-16 h-16 rounded-xl object-cover border border-brand-border">
+            <div class="flex-1 space-y-1">
+              <label class="text-[11px] font-bold text-slate-300">Pet Portrait</label>
+              <button type="button" onclick="navTo('screen-photo-picker')" class="block w-full bg-white/10 hover:bg-white/15 text-white text-[11px] font-semibold py-1.5 rounded-lg border border-white/10 text-center">
+                Choose / Pick Photo
+              </button>
+            </div>
+          </div>
+
+          <div>
+            <label class="text-[11px] font-bold text-slate-400 uppercase">Pet Name *</label>
+            <input type="text" id="inputPetName" required value="COCO" class="w-full mt-1 bg-black/50 border border-brand-border rounded-xl p-3 text-xs text-white focus:border-amber-400 outline-none">
+          </div>
+
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="text-[11px] font-bold text-slate-400 uppercase">Breed *</label>
+              <input type="text" id="inputPetBreed" required value="Indie Dog" class="w-full mt-1 bg-black/50 border border-brand-border rounded-xl p-3 text-xs text-white focus:border-amber-400 outline-none">
+            </div>
+            <div>
+              <label class="text-[11px] font-bold text-slate-400 uppercase">Age / Gender *</label>
+              <input type="text" id="inputPetAge" required value="2 Years (Female)" class="w-full mt-1 bg-black/50 border border-brand-border rounded-xl p-3 text-xs text-white focus:border-amber-400 outline-none">
+            </div>
+          </div>
+
+          <div>
+            <label class="text-[11px] font-bold text-slate-400 uppercase">Parent / Owner Name *</label>
+            <input type="text" id="inputOwnerName" required value="Shekhar" class="w-full mt-1 bg-black/50 border border-brand-border rounded-xl p-3 text-xs text-white focus:border-amber-400 outline-none">
+          </div>
+
+          <div>
+            <label class="text-[11px] font-bold text-slate-400 uppercase">Emergency Contact Phone *</label>
+            <input type="tel" id="inputOwnerPhone" required value="+91 81609 53780" class="w-full mt-1 bg-black/50 border border-brand-border rounded-xl p-3 text-xs text-white focus:border-amber-400 outline-none">
+          </div>
+
+          <div>
+            <label class="text-[11px] font-bold text-slate-400 uppercase">Medical / Allergy Notes</label>
+            <textarea id="inputMedicalNote" rows="2" class="w-full mt-1 bg-black/50 border border-brand-border rounded-xl p-3 text-xs text-white focus:border-amber-400 outline-none">Fully vaccinated (Anti-Rabies 2026). Lactose intolerant. Friendly with kids.</textarea>
+          </div>
+
+          <button type="submit" class="w-full bg-amber-400 hover:bg-amber-300 text-slate-950 font-black py-3.5 rounded-2xl text-xs uppercase tracking-wider transition">
+            Save Pet ID Changes
+          </button>
+        </form>
+      </section>
+
+      <!-- SCREEN 4: PHOTO PICKER -->
+      <section id="screen-photo-picker" class="hidden space-y-5">
+        <div class="flex items-center justify-between">
+          <button onclick="navTo('screen-profile-form')" class="text-xs text-slate-400 hover:text-white flex items-center gap-1.5">
+            <i class="fa-solid fa-arrow-left"></i> Back to Form
+          </button>
+          <span class="text-xs font-bold text-amber-400 font-display">CHOOSE PHOTO</span>
+        </div>
+
+        <p class="text-xs text-slate-400">Select a portrait to preview on the tag profile:</p>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div onclick="selectPresetPhoto('https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=400&auto=format&fit=crop&q=80')" class="bg-brand-surface p-2 rounded-2xl border-2 border-amber-400 cursor-pointer">
+            <img src="https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=400&auto=format&fit=crop&q=80" class="w-full h-32 rounded-xl object-cover">
+            <p class="text-center text-[10px] font-bold text-white mt-2">Indie Puppy</p>
+          </div>
+          <div onclick="selectPresetPhoto('
